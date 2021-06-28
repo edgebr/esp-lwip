@@ -1182,6 +1182,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
   request->request_type = tlv.type & SNMP_ASN1_DATATYPE_MASK;
   request->request_out_type = (SNMP_ASN1_CLASS_CONTEXT | SNMP_ASN1_CONTENTTYPE_CONSTRUCTED | SNMP_ASN1_CONTEXT_PDU_GET_RESP);
 
+  if (request->version != SNMP_VERSION_3) {
   /* validate community (do this after decoding PDU type because we don't want to increase 'inbadcommunitynames' for wrong frame types */
   if (request->community_strlen == 0) {
     /* community string was too long or really empty*/
@@ -1206,6 +1207,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
       snmp_authfail_trap();
       return ERR_ARG;
     }
+  }
   }
 
   /* decode request ID */
